@@ -1,0 +1,16 @@
+{
+    "firstName": "PurchaserName",
+    "lastName": "PurchaserLastName",
+    "phone": "1234567890",
+    "email": "purchaserEmail@email.com",
+    "products": [
+        {
+            "productId": 1,
+            "count": 1
+        },
+        {
+            "productId": 2,
+            "count": 1
+        }
+    ]
+}

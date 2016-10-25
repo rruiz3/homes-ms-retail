@@ -1,0 +1,16 @@
+{
+    "products": [
+        {
+            "productId": 1,
+            "count": 1
+        },
+        {
+            "productId": 2,
+            "storeId": 42
+        }
+    ],
+    "firstName": "PurchaserName",
+    "lastName": "PurchaserLastName",
+    "phoneNumber": "770-937-9730",
+    "email": "purchaserEmail@email.com"
+}
