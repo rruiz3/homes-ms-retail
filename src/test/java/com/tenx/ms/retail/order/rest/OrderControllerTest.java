@@ -90,40 +90,37 @@ public class OrderControllerTest extends BaseIntegrationTest {
 
     @Before
     public void init() throws IOException {
-        if (!init) {
-            requestUrl = String.format(REQUEST_URI_STORE, getBasePath());
+        requestUrl = String.format(REQUEST_URI_STORE, getBasePath());
 
-            ResponseEntity<String> responseStore = getStringResponse(requestUrl, FileUtils.readFileToString(createStore), HttpMethod.POST);
-            storeId = mapper.readValue(responseStore.getBody(), new TypeReference<ResourceCreated<Long>>() {});
-            assertEquals("Store created, status ok response", HttpStatus.OK, responseStore.getStatusCode());
+        ResponseEntity<String> responseStore = getStringResponse(requestUrl, FileUtils.readFileToString(createStore), HttpMethod.POST);
+        storeId = mapper.readValue(responseStore.getBody(), new TypeReference<ResourceCreated<Long>>() {});
+        assertEquals("Store created, status ok response", HttpStatus.OK, responseStore.getStatusCode());
 
-            requestProductUrl = String.format(REQUEST_URI_PRODUCT, getBasePath(), storeId.getId());
+        requestProductUrl = String.format(REQUEST_URI_PRODUCT, getBasePath(), storeId.getId());
 
-            ResponseEntity<String> responseProduct = getStringResponse(requestProductUrl, FileUtils.readFileToString(createProduct), HttpMethod.POST);
-            productId = mapper.readValue(responseProduct.getBody(), new TypeReference<ResourceCreated<Long>>() {});
-            assertEquals("Product created, status ok response", HttpStatus.OK, responseProduct.getStatusCode());
+        ResponseEntity<String> responseProduct = getStringResponse(requestProductUrl, FileUtils.readFileToString(createProduct), HttpMethod.POST);
+        productId = mapper.readValue(responseProduct.getBody(), new TypeReference<ResourceCreated<Long>>() {});
+        assertEquals("Product created, status ok response", HttpStatus.OK, responseProduct.getStatusCode());
 
-            ResponseEntity<String> responseAnotherProduct = getStringResponse(requestProductUrl, FileUtils.readFileToString(createProduct), HttpMethod.POST);
-            newProductId = mapper.readValue(responseAnotherProduct.getBody(), new TypeReference<ResourceCreated<Long>>() {});
-            assertEquals("Product created, status ok response", HttpStatus.OK, responseAnotherProduct.getStatusCode());
+        ResponseEntity<String> responseAnotherProduct = getStringResponse(requestProductUrl, FileUtils.readFileToString(createProduct), HttpMethod.POST);
+        newProductId = mapper.readValue(responseAnotherProduct.getBody(), new TypeReference<ResourceCreated<Long>>() {});
+        assertEquals("Product created, status ok response", HttpStatus.OK, responseAnotherProduct.getStatusCode());
 
-            ResponseEntity<String> responseStock1 = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), productId.getId()), FileUtils.readFileToString(createStock), HttpMethod.POST);
-            assertEquals("Stock added/updated for product, status ok response", HttpStatus.NO_CONTENT, responseStock1.getStatusCode());
-            ResponseEntity<String> responseS = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), productId.getId()), null, HttpMethod.GET);
-            assertEquals("Stock get OK", HttpStatus.OK, responseS.getStatusCode());
-            stock = mapper.readValue(responseS.getBody(), StockDto.class);
-            assertEquals("Stock count ok", stock.getCount(), Long.valueOf(25));
+        ResponseEntity<String> responseStock1 = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), productId.getId()), FileUtils.readFileToString(createStock), HttpMethod.POST);
+        assertEquals("Stock added/updated for product, status ok response", HttpStatus.NO_CONTENT, responseStock1.getStatusCode());
+        ResponseEntity<String> responseS = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), productId.getId()), null, HttpMethod.GET);
+        assertEquals("Stock get OK", HttpStatus.OK, responseS.getStatusCode());
+        stock = mapper.readValue(responseS.getBody(), StockDto.class);
+        assertEquals("Stock count ok", stock.getCount(), Long.valueOf(25));
 
-            ResponseEntity<String> responseStock2 = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), newProductId.getId()), FileUtils.readFileToString(createStock), HttpMethod.POST);
-            assertEquals("Stock added/updated for another product, status ok response", HttpStatus.NO_CONTENT, responseStock2.getStatusCode());
-            ResponseEntity<String> responseSd = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), newProductId.getId()), null, HttpMethod.GET);
-            assertEquals("Stock get OK", HttpStatus.OK, responseSd.getStatusCode());
-            stock2 = mapper.readValue(responseS.getBody(), StockDto.class);
-            assertEquals("Stock count ok", stock2.getCount(), Long.valueOf(25));
+        ResponseEntity<String> responseStock2 = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), newProductId.getId()), FileUtils.readFileToString(createStock), HttpMethod.POST);
+        assertEquals("Stock added/updated for another product, status ok response", HttpStatus.NO_CONTENT, responseStock2.getStatusCode());
+        ResponseEntity<String> responseSd = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), newProductId.getId()), null, HttpMethod.GET);
+        assertEquals("Stock get OK", HttpStatus.OK, responseSd.getStatusCode());
+        stock2 = mapper.readValue(responseS.getBody(), StockDto.class);
+        assertEquals("Stock count ok", stock2.getCount(), Long.valueOf(25));
 
-            requestOrderUrl = String.format(REQUEST_ORDER, getBasePath(), storeId.getId());
-        }
-        init = true;
+        requestOrderUrl = String.format(REQUEST_ORDER, getBasePath(), storeId.getId());
     }
 
     @Test

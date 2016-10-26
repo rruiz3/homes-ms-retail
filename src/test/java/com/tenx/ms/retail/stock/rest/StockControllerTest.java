@@ -66,27 +66,8 @@ public class StockControllerTest extends BaseIntegrationTest {
 
     @Before
     public void init() throws IOException {
-        if (!init) {
-            requestUrl = String.format(REQUEST_URI_STORE, getBasePath());
+        requestUrl = String.format(REQUEST_URI_STORE, getBasePath());
 
-            ResponseEntity<String> responseStore = getStringResponse(requestUrl, FileUtils.readFileToString(createStore), HttpMethod.POST);
-            storeId = mapper.readValue(responseStore.getBody(), new TypeReference<ResourceCreated<Long>>() {});
-            assertEquals("Store created, status ok response", HttpStatus.OK, responseStore.getStatusCode());
-
-            requestProductUrl = String.format(REQUEST_URI_PRODUCT, getBasePath(), storeId.getId());
-
-            ResponseEntity<String> responseProduct = getStringResponse(requestProductUrl, FileUtils.readFileToString(createProduct), HttpMethod.POST);
-            productId = mapper.readValue(responseProduct.getBody(), new TypeReference<ResourceCreated<Long>>() {});
-            assertEquals("Product created, status ok response", HttpStatus.OK, responseProduct.getStatusCode());
-
-            requestStockUrl = String.format(REQUEST_STOCK, getBasePath(), storeId.getId(), productId.getId());
-        }
-        init = true;
-    }
-
-    @Test
-    @FlywayTest
-    public void createGetStockSuccess() throws IOException {
         ResponseEntity<String> responseStore = getStringResponse(requestUrl, FileUtils.readFileToString(createStore), HttpMethod.POST);
         storeId = mapper.readValue(responseStore.getBody(), new TypeReference<ResourceCreated<Long>>() {});
         assertEquals("Store created, status ok response", HttpStatus.OK, responseStore.getStatusCode());
@@ -96,6 +77,13 @@ public class StockControllerTest extends BaseIntegrationTest {
         ResponseEntity<String> responseProduct = getStringResponse(requestProductUrl, FileUtils.readFileToString(createProduct), HttpMethod.POST);
         productId = mapper.readValue(responseProduct.getBody(), new TypeReference<ResourceCreated<Long>>() {});
         assertEquals("Product created, status ok response", HttpStatus.OK, responseProduct.getStatusCode());
+
+        requestStockUrl = String.format(REQUEST_STOCK, getBasePath(), storeId.getId(), productId.getId());
+    }
+
+    @Test
+    @FlywayTest
+    public void createGetStockSuccess() throws IOException {
         ResponseEntity<String> responseStock = getStringResponse(requestStockUrl, FileUtils.readFileToString(createStock), HttpMethod.POST);
         assertNotNull(responseStock);
         assertEquals("Stock added, status ok response", HttpStatus.NO_CONTENT, responseStock.getStatusCode());

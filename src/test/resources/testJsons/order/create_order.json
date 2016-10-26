@@ -6,11 +6,13 @@
     "products":[
         {
           "product_id":1,
-          "count":1
+          "count":1,
+          "store_id": 1
         },
         {
           "product_id":2,
-          "count":1
+          "count":1,
+          "store_id": 1
         }
     ]
 }

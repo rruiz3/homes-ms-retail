@@ -73,23 +73,15 @@ public class ProductControllerTest extends BaseIntegrationTest {
 
     @Before
     public void init() throws IOException {
-        if (!init) {
-            ResponseEntity<String> responseEntity = getStringResponse(String.format(REQUEST_URI, getBasePath()), FileUtils.readFileToString(createStore), HttpMethod.POST);
-            storeId = mapper.readValue(responseEntity.getBody(), new TypeReference<ResourceCreated<Long>>() {});
+        ResponseEntity<String> responseEntity = getStringResponse(String.format(REQUEST_URI, getBasePath()), FileUtils.readFileToString(createStore), HttpMethod.POST);
+        storeId = mapper.readValue(responseEntity.getBody(), new TypeReference<ResourceCreated<Long>>() {});
 
-            requestProductUrl = String.format(REQUEST_URI_PRODUCT, getBasePath(), storeId.getId());
-        }
-        init = true;
+        requestProductUrl = String.format(REQUEST_URI_PRODUCT, getBasePath(), storeId.getId());
     }
 
     @Test
     @FlywayTest
     public void createProductFullSuccess() throws IOException {
-        ResponseEntity<String> response = getStringResponse(String.format(REQUEST_URI, getBasePath()), FileUtils.readFileToString(createStore), HttpMethod.POST);
-        assertNotNull(response);
-        assertEquals("Store created, status ok response", HttpStatus.OK, response.getStatusCode());
-
-
         ResponseEntity<String> responseEntity = getStringResponse(requestProductUrl, FileUtils.readFileToString(createProduct), HttpMethod.POST);
         assertNotNull(responseEntity);
         assertEquals("Product created, status ok response", HttpStatus.OK, responseEntity.getStatusCode());
@@ -162,7 +154,7 @@ public class ProductControllerTest extends BaseIntegrationTest {
         ResourceCreated<Long> productId = mapper.readValue(responseEntity.getBody(), new TypeReference<ResourceCreated<Long>>() {});
 
         ResponseEntity<String> response = getStringResponse(String.format(REQUEST_DELETE, getBasePath()) + "/" + productId.getId(), null, HttpMethod.DELETE);
-        assertEquals("Delete product, success response", HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Delete product, success response", HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     @Test
