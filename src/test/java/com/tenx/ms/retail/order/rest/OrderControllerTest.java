@@ -8,6 +8,7 @@ import com.tenx.ms.commons.rest.dto.ResourceCreated;
 import com.tenx.ms.commons.tests.BaseIntegrationTest;
 import com.tenx.ms.retail.order.constants.OrderStatus;
 import com.tenx.ms.retail.order.rest.dto.OrderCreated;
+import com.tenx.ms.retail.stock.rest.dto.StockDto;
 import org.apache.commons.io.FileUtils;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.flywaydb.test.junit.FlywayTestExecutionListener;
@@ -39,7 +40,7 @@ public class OrderControllerTest extends BaseIntegrationTest {
     private final String API_VERSION = RestConstants.VERSION_ONE;
     private final String REQUEST_URI_STORE = "%s" + API_VERSION + "/stores/";
     private final String REQUEST_URI_PRODUCT = "%s" + API_VERSION + "/products/%s";
-    private final String REQUEST_STOCK = "%s" + API_VERSION + "/stock/%s";
+    private final String REQUEST_STOCK = "%s" + API_VERSION + "/stocks/%s";
     private final String REQUEST_ORDER = "%s" + API_VERSION + "/orders/%s";
     private static boolean init = false;
     private static String requestUrl;
@@ -50,6 +51,9 @@ public class OrderControllerTest extends BaseIntegrationTest {
     private static ResourceCreated<Long> productId;
     private static ResourceCreated<Long> newProductId;
     private static final Long INVALID_ID = 999999999L;
+
+    private static StockDto stock;
+    private static StockDto stock2;
 
     @Autowired
     private ObjectMapper mapper;
@@ -105,9 +109,17 @@ public class OrderControllerTest extends BaseIntegrationTest {
 
             ResponseEntity<String> responseStock1 = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), productId.getId()), FileUtils.readFileToString(createStock), HttpMethod.POST);
             assertEquals("Stock added/updated for product, status ok response", HttpStatus.NO_CONTENT, responseStock1.getStatusCode());
+            ResponseEntity<String> responseS = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), productId.getId()), null, HttpMethod.GET);
+            assertEquals("Stock get OK", HttpStatus.OK, responseS.getStatusCode());
+            stock = mapper.readValue(responseS.getBody(), StockDto.class);
+            assertEquals("Stock count ok", stock.getCount(), Long.valueOf(25));
 
             ResponseEntity<String> responseStock2 = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), newProductId.getId()), FileUtils.readFileToString(createStock), HttpMethod.POST);
             assertEquals("Stock added/updated for another product, status ok response", HttpStatus.NO_CONTENT, responseStock2.getStatusCode());
+            ResponseEntity<String> responseSd = getStringResponse(String.format(REQUEST_STOCK + "/%s", getBasePath(), storeId.getId(), newProductId.getId()), null, HttpMethod.GET);
+            assertEquals("Stock get OK", HttpStatus.OK, responseSd.getStatusCode());
+            stock2 = mapper.readValue(responseS.getBody(), StockDto.class);
+            assertEquals("Stock count ok", stock2.getCount(), Long.valueOf(25));
 
             requestOrderUrl = String.format(REQUEST_ORDER, getBasePath(), storeId.getId());
         }
@@ -138,34 +150,39 @@ public class OrderControllerTest extends BaseIntegrationTest {
     @FlywayTest
     public void createOrderInvalidStore () throws IOException{
         ResponseEntity<String> responseEntity = getStringResponse(String.format(REQUEST_ORDER, getBasePath(), INVALID_ID), FileUtils.readFileToString(createOrder), HttpMethod.POST);
-        assertEquals("Order not created", HttpStatus.PRECONDITION_FAILED, responseEntity.getStatusCode());
+        assertEquals("Order not created", HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
+    @FlywayTest
     public void createOrderInvalidProducts () throws IOException {
          ResponseEntity<String> responseEntity = getStringResponse(requestOrderUrl, FileUtils.readFileToString(createOrderFailProducts), HttpMethod.POST);
          assertEquals("Order not created", HttpStatus.PRECONDITION_FAILED, responseEntity.getStatusCode());
     }
 
     @Test
+    @FlywayTest
     public void createOrderInvalidName () throws IOException {
          ResponseEntity<String> responseEntity = getStringResponse(requestOrderUrl, FileUtils.readFileToString(createOrderFailName), HttpMethod.POST);
          assertEquals("Order not created", HttpStatus.PRECONDITION_FAILED, responseEntity.getStatusCode());
     }
 
     @Test
+    @FlywayTest
     public void createOrderInvalidLastName () throws IOException {
          ResponseEntity<String> responseEntity = getStringResponse(requestOrderUrl, FileUtils.readFileToString(createOrderFailLastName), HttpMethod.POST);
          assertEquals("Order not created", HttpStatus.PRECONDITION_FAILED, responseEntity.getStatusCode());
     }
 
     @Test
+    @FlywayTest
     public void createOrderInvalidEmail () throws IOException {
          ResponseEntity<String> responseEntity = getStringResponse(requestOrderUrl, FileUtils.readFileToString(createOrderFailEmail), HttpMethod.POST);
          assertEquals("Order not created", HttpStatus.PRECONDITION_FAILED, responseEntity.getStatusCode());
     }
 
     @Test
+    @FlywayTest
     public void createOrderInvalidPhone () throws IOException {
          ResponseEntity<String> responseEntity = getStringResponse(requestOrderUrl, FileUtils.readFileToString(createOrderFailPhone), HttpMethod.POST);
          assertEquals("Order not created", HttpStatus.PRECONDITION_FAILED, responseEntity.getStatusCode());

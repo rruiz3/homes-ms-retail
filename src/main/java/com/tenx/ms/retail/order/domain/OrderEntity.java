@@ -3,6 +3,7 @@ package com.tenx.ms.retail.order.domain;
 import com.tenx.ms.commons.validation.constraints.Email;
 import com.tenx.ms.commons.validation.constraints.PhoneNumber;
 import com.tenx.ms.retail.order.constants.OrderStatus;
+import com.tenx.ms.retail.store.domain.StoreEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.sql.Timestamp;
@@ -33,8 +36,9 @@ public class OrderEntity {
     @Column(name = "order_id", nullable = false)
     private Long orderId;
 
-    @Column(name = "store_id", nullable = false)
-    private Long storeId;
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private StoreEntity store;
 
     @Column(name="order_date", nullable = false)
     private Timestamp orderDate;
@@ -42,7 +46,9 @@ public class OrderEntity {
     @Column(name = "status", nullable = false)
     private OrderStatus status;
 
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "orderId", fetch = FetchType.LAZY)
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
     private List<OrderItemEntity> products;
 
     @Column(name = "first_name", nullable = false)

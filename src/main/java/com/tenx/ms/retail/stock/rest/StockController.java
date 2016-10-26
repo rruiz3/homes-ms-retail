@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@Api(value = "stock", description = "Stock API")
+@Api(value = "stocks", description = "Stock API")
 @RestController("stockControllerV1")
-@RequestMapping(RestConstants.VERSION_ONE + "/stock")
+@RequestMapping(RestConstants.VERSION_ONE + "/stocks")
 public class StockController {
 
     @Autowired

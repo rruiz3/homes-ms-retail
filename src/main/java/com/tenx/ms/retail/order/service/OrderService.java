@@ -9,6 +9,8 @@ import com.tenx.ms.retail.order.repository.OrderRepository;
 import com.tenx.ms.retail.order.rest.dto.OrderCreated;
 import com.tenx.ms.retail.order.rest.dto.OrderDto;
 import com.tenx.ms.retail.order.rest.dto.OrderItemDto;
+import com.tenx.ms.retail.product.domain.ProductEntity;
+import com.tenx.ms.retail.product.repository.ProductRepository;
 import com.tenx.ms.retail.stock.rest.dto.StockDto;
 import com.tenx.ms.retail.stock.service.StockService;
 import com.tenx.ms.retail.store.domain.StoreEntity;
@@ -23,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -42,6 +43,9 @@ public class OrderService {
     private StoreRepository storeRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private StockService stockSrvc;
 
     @Transactional
@@ -54,22 +58,32 @@ public class OrderService {
         OrderEntity orderEntity = CONVERTER.toT2(order);
         orderEntity.setStatus(OrderStatus.ORDERED);
         orderEntity.setOrderDate(Timestamp.valueOf(LocalDateTime.now()));
-        OrderEntity result = orderRepository.save(orderEntity);
+        orderEntity.setStore(store.get());
 
         List<OrderItemDto> backorderedItems = new ArrayList<>();
+        List<OrderItemEntity> items = new ArrayList<>();
 
         for (OrderItemDto orderItem : order.getProducts()) {
+            Optional<ProductEntity> productEntity = productRepository.findByStoreIdAndId(store.get().getId(), orderItem.getProductId());
+            if (!productEntity.isPresent()) {
+                throw new NoSuchElementException("Product not found.");
+            }
             StockDto stock = stockSrvc.findStockProductId(order.getStoreId(), orderItem.getProductId());
             if (stock != null && stock.getCount() >= orderItem.getCount()) {
                 stock.setCount(stock.getCount() - orderItem.getCount());
                 stockSrvc.upsertStock(stock);
+
+                OrderItemEntity item = CONVERTER_ITEM.toT2(orderItem);
+                item.setProduct(productEntity.get());
+                items.add(item);
             } else {
                 backorderedItems.add(orderItem);
             }
         }
 
-        List<OrderItemEntity> items = order.getProducts().stream().map(CONVERTER_ITEM::toT2).collect(Collectors.toList());
+        orderEntity.setProducts(items);
         orderItemRepository.save(items);
+        OrderEntity result = orderRepository.save(orderEntity);
         return new OrderCreated(result.getOrderId(), result.getStatus(), backorderedItems);
     }
 }

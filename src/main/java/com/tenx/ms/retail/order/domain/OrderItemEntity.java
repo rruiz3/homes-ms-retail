@@ -1,5 +1,6 @@
 package com.tenx.ms.retail.order.domain;
 
+import com.tenx.ms.retail.product.domain.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Builder
@@ -28,12 +30,13 @@ public class OrderItemEntity {
     private Long id;
 
     @ManyToOne(targetEntity = OrderEntity.class)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", insertable = false, updatable = false, nullable = false)
     private OrderEntity orderId;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @OneToOne
+    @JoinColumn(name = "product_id", updatable = false)
+    private ProductEntity product;
 
     @Column(name="count")
-    private Integer count;
+    private Long count;
 }

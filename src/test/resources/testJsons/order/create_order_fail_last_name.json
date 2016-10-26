@@ -1,15 +1,15 @@
 {
-    "firstName": "PurchaserName",
-    "lastName": "",
+    "first_name": "PurchaserName",
+    "last_name": "",
     "phone": "770-937-9730",
     "email": "purchaserEmail@email.com",
     "products": [
         {
-            "productId": 1,
+            "product_id": 1,
             "count": 1
         },
         {
-            "productId": 2,
+            "product_id": 2,
             "count": 1
         }
     ]

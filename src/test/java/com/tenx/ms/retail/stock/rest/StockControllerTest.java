@@ -39,14 +39,14 @@ public class StockControllerTest extends BaseIntegrationTest {
     private final String API_VERSION = RestConstants.VERSION_ONE;
     private final String REQUEST_URI_STORE = "%s" + API_VERSION + "/stores/";
     private final String REQUEST_URI_PRODUCT = "%s" + API_VERSION + "/products/%s";
-    private final String REQUEST_STOCK = "%s" + API_VERSION + "/stock/%s/%s";
+    private final String REQUEST_STOCK = "%s" + API_VERSION + "/stocks/%s/%s";
     private static boolean init = false;
     private static String requestUrl;
     private static String requestProductUrl;
     private static String requestStockUrl;
 
-    private ResourceCreated<Long> storeId;
-    private ResourceCreated<Long> productId;
+    private static ResourceCreated<Long> storeId;
+    private static ResourceCreated<Long> productId;
     private static final Long INVALID_ID = 99999999L;
 
     @Autowired

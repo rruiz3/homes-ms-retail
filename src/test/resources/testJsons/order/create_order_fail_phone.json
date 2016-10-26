@@ -1,15 +1,15 @@
 {
-    "firstName": "PurchaserName",
-    "lastName": "PurchaserLastName",
+    "first_name": "PurchaserName",
+    "las_name": "PurchaserLastName",
     "phone": "1234567890",
     "email": "purchaserEmail@email.com",
     "products": [
         {
-            "productId": 1,
+            "product_id": 1,
             "count": 1
         },
         {
-            "productId": 2,
+            "product_id": 2,
             "count": 1
         }
     ]

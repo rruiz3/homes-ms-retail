@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -41,13 +40,11 @@ public class OrderDto {
     private List<OrderItemDto> products;
 
     @Valid
-    @NotEmpty
     @Pattern(regexp = "^[A-Za-z]+$")
     @ApiModelProperty(value = "Purchaser first name")
     private String firstName;
 
     @Valid
-    @NotEmpty
     @Pattern(regexp = "^[A-Za-z]+$")
     @ApiModelProperty(value = "Purchaser last name")
     private String lastName;

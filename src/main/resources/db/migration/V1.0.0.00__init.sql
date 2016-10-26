@@ -46,7 +46,7 @@ CREATE TABLE order_item (
     order_item_id           BIGINT NOT NULL AUTO_INCREMENT  COMMENT 'Id of the order item',
     order_id                BIGINT NOT NULL                 COMMENT 'Id of the associated order',
     product_id              BIGINT NOT NULL                 COMMENT 'Id of the associated product',
-    count                   INTEGER NOT NULL                COMMENT 'Amount of product requested',
+    count                   BIGINT NOT NULL                COMMENT 'Amount of product requested',
     PRIMARY KEY (order_item_id),
     FOREIGN KEY (order_id) REFERENCES order_complete (order_id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE CASCADE
