@@ -82,8 +82,8 @@ public class OrderService {
         }
 
         orderEntity.setProducts(items);
-        orderItemRepository.save(items);
         OrderEntity result = orderRepository.save(orderEntity);
+        orderItemRepository.save(items);
         return new OrderCreated(result.getOrderId(), result.getStatus(), backorderedItems);
     }
 }
