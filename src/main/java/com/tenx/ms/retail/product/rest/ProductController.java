@@ -9,8 +9,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +31,7 @@ public class ProductController {
     @Autowired
     private ProductService productSrvc;
 
-    @ApiOperation(value = "Creates a new product with @name")
+    @ApiOperation(value = "Creates a new product with @name", authorizations = { @Authorization("ROLE_ADMIN") })
     @ApiResponses( value = {
         @ApiResponse(code = 200, message = "Success"),
         @ApiResponse(code = 412, message = "Error: Invalid parameter."),
@@ -37,6 +39,7 @@ public class ProductController {
     })
     @RequestMapping(value = "{storeId:\\d+}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResourceCreated<Long> createProduct(@ApiParam(name = "storeId", value = "Store Id", required = true) @PathVariable Long storeId,
         @Validated @RequestBody ProductDto product){
         product.setStoreId(storeId);
@@ -66,7 +69,7 @@ public class ProductController {
         return productSrvc.findProductInStore(storeId, productId);
     }
 
-    @ApiOperation(value = "Deletes the given product")
+    @ApiOperation(value = "Deletes the given product", authorizations = { @Authorization("ROLE_ADMIN") })
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success: Product retrieved."),
         @ApiResponse(code = 400, message = "Resource was not found."),
@@ -74,6 +77,7 @@ public class ProductController {
     })
     @RequestMapping(value = {"{productId:\\d+}"}, method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteProduct(@ApiParam(name = "productId", value = "Id of the product", required = true) @PathVariable Long productId){
         productSrvc.deleteProduct(productId);
     }

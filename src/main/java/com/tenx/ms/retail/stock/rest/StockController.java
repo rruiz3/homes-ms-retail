@@ -9,8 +9,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,13 +30,14 @@ public class StockController {
     @Autowired
     private StockService stockSrvc;
 
-    @ApiOperation(value = "Update product stock")
+    @ApiOperation(value = "Update product stock", authorizations = { @Authorization("ROLE_ADMIN") })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Success"),
                            @ApiResponse(code = 404, message = "Stock not found"),
                            @ApiResponse(code = 412, message = "Validation error"),
                            @ApiResponse(code = 500, message = "Internal server error")})
     @RequestMapping(value = {"/{storeId:\\d+}/{productId:\\d+}"}, method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void createStock(
         @ApiParam(name = "storeId", value = "Store id") @PathVariable() Long storeId,
         @ApiParam(name = "productId", value = "Product id") @PathVariable() Long productId,
