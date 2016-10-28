@@ -47,7 +47,6 @@ public class ProductService {
     public ProductDto findProductInStore(Long storeId, Long productId) {
         if (validateStoreExists(storeId)) {
             Optional<ProductEntity> product = productRepository.findByStoreIdAndId(storeId, productId);
-            System.out.println(product.isPresent());
             if (product.isPresent()) {
                 return new ProductDto(product.get().getId(), product.get().getStore().getId(), product.get().getName(), product.get().getDescription(), product.get().getSku(), product.get().getPrice());
             } else {
