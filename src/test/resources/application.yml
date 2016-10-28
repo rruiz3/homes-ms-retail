@@ -1,0 +1,21 @@
+management.security.enabled: false
+security.basic.enabled: false
+
+dbhost: 127.0.0.1
+dbport: 11301
+
+spring:
+    cloud:
+        discovery:
+            enabled: false
+    datasource:
+        url: jdbc:mysql://${dbhost}:${dbport}/sspms?createDatabaseIfNotExist=true&autoReconnect=true&tinyInt1isBit=false&useSSL=false&zeroDateTimeBehavior=convertToNull&
+        username: root
+        password: 'tenxdev'
+        driver-class-name: com.mysql.jdbc.Driver
+    jpa:
+        hibernate:
+          ddl-auto: validate
+
+server:
+   port: 0
